@@ -66,4 +66,24 @@ defmodule EmitTest do
     Emit.pub :hello, query
     assert_receive :hello
   end
+
+  test "auto unsub works" do
+    spawn fn ->
+      Emit.sub %{key: "value"}
+      Emit.unsub_auto()
+      :timer.sleep 100
+    end
+
+    # We sleep here because it's possible that the query is too quick, racing
+    # with the initial subscription and sometimes causing failures.
+    :timer.sleep 5
+    query = Emit.query()
+    res = DB.query query
+    refute [] == res
+
+    # We sleep here to ensure that the spawned pid is actually dead.
+    :timer.sleep 105
+    res = DB.query query
+    assert [] == res
+  end
 end

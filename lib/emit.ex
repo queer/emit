@@ -10,6 +10,17 @@ defmodule Emit do
     DB.del key()
   end
 
+  def unsub_auto do
+    pid = self()
+    spawn fn ->
+      Process.monitor pid
+      receive do
+        {:DOWN, _ref, :process, _pid, _reason} ->
+          DB.del pid
+      end
+    end
+  end
+
   def pub(msg, %Query{} = query) do
     [Node.self() | Node.list()]
     |> Enum.map(fn node ->
