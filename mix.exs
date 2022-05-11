@@ -1,6 +1,8 @@
 defmodule Emit.MixProject do
   use Mix.Project
 
+  @repo_url "https://github.com/queer/emit"
+
   def project do
     [
       app: :emit,
@@ -9,6 +11,24 @@ defmodule Emit.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
+
+      # Hex
+      description: " Powerful metadata-backed pubsub for Elixir and Erlang.",
+      package: [
+        maintainers: ["amy"],
+        links: %{"GitHub" => @repo_url},
+        licenses: ["MIT"],
+      ],
+
+      # Docs
+      name: "Emit",
+      docs: [
+        homepage_url: @repo_url,
+        source_url: @repo_url,
+        extras: [
+          "README.md",
+        ],
+      ],
     ]
   end
 
@@ -27,6 +47,7 @@ defmodule Emit.MixProject do
 
       {:benchee, "~> 1.1", only: [:dev, :test]},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
     ]
   end
 
