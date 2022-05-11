@@ -39,7 +39,7 @@ has to query an in-memory database on each message send.
 
 ## Usage
 
-1. Add to mix.exs
+1. [Get it from Hex](https://hex.pm/packages/emit) and add to mix.exs
 2. Add `config :emit, :task_scheduler, MyApp.Emit.TaskScheduler` to config.exs
 3. Add `{Task.Supervisor, name: MyApp.Emit.TaskScheduler}` towards the top of
    your supervision tree
