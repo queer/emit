@@ -1,6 +1,6 @@
 # Emit
 
-> *Powerful metadata-backed pubsub for Elixir and Erlang.*
+> *Powerful metadata-backed pubsub for Elixir.*
 
 Emit is a pubsub library that allows controlling the receivers of messages
 through granular metadata queries. pids that subscribe to Emit messages can

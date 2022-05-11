@@ -13,7 +13,7 @@ defmodule Emit.MixProject do
       aliases: aliases(),
 
       # Hex
-      description: " Powerful metadata-backed pubsub for Elixir and Erlang.",
+      description: " Powerful metadata-backed pubsub for Elixir.",
       package: [
         maintainers: ["amy"],
         links: %{"GitHub" => @repo_url},
