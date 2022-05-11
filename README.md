@@ -235,7 +235,7 @@ git:(mistress) 10 | ▶
 
 - It works! :D
 - Performance scaling is about one order of magnitude of time per order of
-  magnitude of number of clients. For example, 10 pids takes 10ms, 100 pids
+  magnitude of number of clients. For example, if 10 pids takes 10ms, 100 pids
   takes 100ms, 1000 pids takes 1000ms, etc.
 - Performace is great at low numbers of pids, and is acceptable even when
   pushing messages to up to 50k out of 100k pids.
