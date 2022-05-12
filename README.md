@@ -60,6 +60,12 @@ Emit.sub %{key: "value"}
 Emit.unsub()
 ```
 
+### Automatically unsubscribe from Emit messages when this pid stops
+
+```elixir
+Emit.unsub_auto()
+```
+
 ### Push messages
 
 ```elixir
