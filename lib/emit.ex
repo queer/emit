@@ -2,23 +2,23 @@ defmodule Emit do
   alias Emit.{Cluster, DB}
   alias Lethe.Query
 
-  def sub(metadata) when is_map(metadata) do
-    DB.set key(), metadata
+  def sub(key \\ key(), metadata) when is_map(metadata) do
+    DB.set(key, metadata)
   end
 
-  def unsub do
-    DB.del key()
+  def unsub(key \\ key()) do
+    DB.del(key)
   end
 
-  def unsub_auto do
-    pid = self()
-    spawn fn ->
-      Process.monitor pid
+  def unsub_auto(key \\ key()) do
+    spawn(fn ->
+      Process.monitor(key)
+
       receive do
         {:DOWN, _ref, :process, _pid, _reason} ->
-          DB.del pid
+          DB.del(key)
       end
-    end
+    end)
   end
 
   def pub(msg, %Query{} = query) do
@@ -31,11 +31,11 @@ defmodule Emit do
           {Cluster.task_supervisor(), node}
         end
 
-      Task.Supervisor.async target, fn ->
+      Task.Supervisor.async(target, fn ->
         query
-        |> DB.query
+        |> DB.query()
         |> Manifold.send(msg)
-      end
+      end)
     end)
     |> Enum.each(&Task.await/1)
   end

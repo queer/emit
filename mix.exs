@@ -17,7 +17,7 @@ defmodule Emit.MixProject do
       package: [
         maintainers: ["amy"],
         links: %{"GitHub" => @repo_url},
-        licenses: ["MIT"],
+        licenses: ["MIT"]
       ],
 
       # Docs
@@ -26,9 +26,9 @@ defmodule Emit.MixProject do
         homepage_url: @repo_url,
         source_url: @repo_url,
         extras: [
-          "README.md",
-        ],
-      ],
+          "README.md"
+        ]
+      ]
     ]
   end
 
@@ -44,10 +44,9 @@ defmodule Emit.MixProject do
     [
       {:lethe, "~> 0.6.0"},
       {:manifold, "~> 1.4"},
-
       {:benchee, "~> 1.1", only: [:dev, :test]},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 
@@ -55,7 +54,7 @@ defmodule Emit.MixProject do
     [
       "bench.1k": "run bench/benchmark_1k.exs",
       "bench.10k": "run bench/benchmark_10k.exs",
-      "bench.100k": "run bench/benchmark_100k.exs",
+      "bench.100k": "run bench/benchmark_100k.exs"
     ]
   end
 end

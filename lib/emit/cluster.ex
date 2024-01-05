@@ -3,20 +3,20 @@ defmodule Emit.Cluster do
   require Logger
 
   def start_link(_) do
-    GenServer.start_link __MODULE__, 0, name: __MODULE__
+    GenServer.start_link(__MODULE__, 0, name: __MODULE__)
   end
 
   def init(_) do
     :net_kernel.monitor_nodes(true)
-    Logger.debug "[EMIT] [CLUSTER] boot: node: monitor up"
+    Logger.debug("[EMIT] [CLUSTER] boot: node: monitor up")
 
     {:ok, 0}
   end
 
   def handle_info({msg, _node}, 0) when msg in [:nodeup, :nodedown] do
-    Logger.info "[EMIT] [CLUSTER] topology: neighbours updating..."
+    Logger.info("[EMIT] [CLUSTER] topology: neighbours updating...")
 
-    Logger.info "[EMIT] [CLUSTER] topology: neighbours updated"
+    Logger.info("[EMIT] [CLUSTER] topology: neighbours updated")
     {:noreply, 0}
   end
 
