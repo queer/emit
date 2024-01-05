@@ -37,6 +37,8 @@ Emit.pub :disconnect, query
 Emit will always be slower than a basic pubsub system, due to the fact that it
 has to query an in-memory database on each message send.
 
+Emit works transparently across nodes.
+
 ## Usage
 
 1. [Get it from Hex](https://hex.pm/packages/emit) and add to mix.exs
