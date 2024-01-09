@@ -6,14 +6,14 @@ defmodule Emit.MixProject do
   def project do
     [
       app: :emit,
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
 
       # Hex
-      description: " Powerful metadata-backed pubsub for Elixir.",
+      description: "Powerful metadata-backed pubsub for Elixir.",
       package: [
         maintainers: ["amy"],
         links: %{"GitHub" => @repo_url},

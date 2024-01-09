@@ -2,12 +2,12 @@ defmodule Emit.Cluster do
   use GenServer
   require Logger
 
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, 0, name: __MODULE__)
+  def start_link(monitor_fn \\ {__MODULE__, :monitor_nodes, []}) do
+    GenServer.start_link(__MODULE__, monitor_fn, name: __MODULE__)
   end
 
-  def init(_) do
-    :net_kernel.monitor_nodes(true)
+  def init(monitor_fn) do
+    monitor_fn.()
     Logger.debug("[EMIT] [CLUSTER] boot: node: monitor up")
 
     {:ok, 0}
@@ -21,4 +21,8 @@ defmodule Emit.Cluster do
   end
 
   def task_supervisor, do: Application.get_env(:emit, :task_scheduler, Emit.TaskScheduler)
+
+  def monitor_nodes do
+    :net_kernel.monitor_nodes(true)
+  end
 end
