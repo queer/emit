@@ -12,6 +12,10 @@ defmodule Emit.DB do
     GenServer.start_link(__MODULE__, table, name: __MODULE__)
   end
 
+  def init([]) do
+    init(@default_table)
+  end
+
   def init(table) do
     :stopped = :mnesia.stop()
     :mnesia.create_schema([])
