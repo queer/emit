@@ -18,6 +18,7 @@ defmodule Emit.DB do
     :ok = :mnesia.start()
 
     create_table_with_indexes(table, [attributes: [:pid, :metadata]], [:pid, :metadata])
+    Logger.debug("[EMIT] [DB] [BOOT] #{inspect(table)} created")
 
     Process.send_after(self(), :prune, @prune_interval)
 
@@ -50,6 +51,8 @@ defmodule Emit.DB do
   end
 
   def get(key, table \\ @default_table) do
+    Logger.debug("[EMIT] [DB] get: #{inspect(key)} from #{inspect(table)}")
+
     :mnesia.transaction(fn ->
       case :mnesia.read({table, key}) do
         [{^table, ^key, value}] ->
@@ -63,6 +66,8 @@ defmodule Emit.DB do
   end
 
   def set(key, value, table \\ @default_table) do
+    Logger.debug("[EMIT] [DB] set: #{inspect(key)} to #{inspect(value)} in #{inspect(table)}")
+
     :mnesia.transaction(fn ->
       :ok = :mnesia.write({table, key, value})
     end)
@@ -70,6 +75,8 @@ defmodule Emit.DB do
   end
 
   def del(key, table \\ @default_table) do
+    Logger.debug("[EMIT] [DB] del: #{inspect(key)} from #{inspect(table)}")
+
     :mnesia.transaction(fn ->
       :ok = :mnesia.delete({table, key})
     end)
