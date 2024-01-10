@@ -2,21 +2,21 @@ defmodule Emit do
   alias Emit.{Cluster, DB}
   alias Lethe.Query
 
-  def sub(key \\ key(), metadata) when is_map(metadata) do
-    DB.set(key, metadata)
+  def sub(key \\ key(), metadata, table \\ DB.default_table()) when is_map(metadata) do
+    DB.set(key, metadata, table)
   end
 
-  def unsub(key \\ key()) do
-    DB.del(key)
+  def unsub(key \\ key(), table \\ DB.default_table()) do
+    DB.del(key, table)
   end
 
-  def unsub_auto(key \\ key()) do
+  def unsub_auto(key \\ key(), table \\ DB.default_table()) do
     spawn(fn ->
       Process.monitor(key)
 
       receive do
         {:DOWN, _ref, :process, _pid, _reason} ->
-          DB.del(key)
+          DB.del(key, table)
       end
     end)
   end
@@ -40,7 +40,7 @@ defmodule Emit do
     |> Enum.each(&Task.await/1)
   end
 
-  def query, do: DB.new_query()
+  def query(table \\ DB.default_table()), do: DB.new_query(table)
 
   defp key, do: self()
 end

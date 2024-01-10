@@ -5,8 +5,8 @@ defmodule EmitTest do
   doctest Emit
 
   setup do
-    {:ok, cluster_pid} = Cluster.start_link(0)
-    {:ok, db_pid} = DB.start_link(0)
+    {:ok, cluster_pid} = Cluster.start_link()
+    {:ok, db_pid} = DB.start_link()
 
     on_exit(fn ->
       Emit.unsub()

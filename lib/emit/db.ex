@@ -3,38 +3,38 @@ defmodule Emit.DB do
   alias Lethe.Query
   require Logger
 
-  @table :emit_metadata
   @prune_interval 5_000
 
-  def table, do: @table
+  @default_table :emit_metadata
+  def default_table, do: @default_table
 
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, 0, name: __MODULE__)
+  def start_link(table \\ @default_table) do
+    GenServer.start_link(__MODULE__, table, name: __MODULE__)
   end
 
-  def init(_) do
+  def init(table) do
     :stopped = :mnesia.stop()
     :mnesia.create_schema([])
     :ok = :mnesia.start()
 
-    create_table_with_indexes(@table, [attributes: [:pid, :metadata]], [:pid, :metadata])
+    create_table_with_indexes(table, [attributes: [:pid, :metadata]], [:pid, :metadata])
 
     Process.send_after(self(), :prune, @prune_interval)
 
-    {:ok, 0}
+    {:ok, table}
   end
 
-  def handle_info(:prune, 0) do
+  def handle_info(:prune, table) do
     _prune_count =
       Emit.query()
       |> query
       |> Enum.reject(&Process.alive?/1)
-      |> Enum.map(&del/1)
+      |> Enum.map(&del(&1, table))
       |> length
 
     # Logger.debug "[EMIT] [DB] prune: #{prune_count} entries pruned"
     Process.send_after(self(), :prune, @prune_interval)
-    {:noreply, 0}
+    {:noreply, table}
   end
 
   defp create_table_with_indexes(table, opts, index_keys) do
@@ -42,41 +42,41 @@ defmodule Emit.DB do
     for index <- index_keys, do: :mnesia.add_table_index(table, index)
   end
 
-  def stop do
-    :mnesia.delete_table(@table)
+  def stop(table \\ @default_table) do
+    :mnesia.delete_table(table)
     :mnesia.stop()
     :mnesia.delete_schema([])
     :ok
   end
 
-  def get(key) do
+  def get(key, table \\ @default_table) do
     :mnesia.transaction(fn ->
-      case :mnesia.read({@table, key}) do
-        [{@table, ^key, value}] ->
+      case :mnesia.read({table, key}) do
+        [{^table, ^key, value}] ->
           value
 
         [] ->
           nil
       end
     end)
-    |> return_read_result_or_error(@table, key)
+    |> return_read_result_or_error(table, key)
   end
 
-  def set(key, value) do
+  def set(key, value, table \\ @default_table) do
     :mnesia.transaction(fn ->
-      :ok = :mnesia.write({@table, key, value})
+      :ok = :mnesia.write({table, key, value})
     end)
     |> return_result_or_error
   end
 
-  def del(key) do
+  def del(key, table \\ @default_table) do
     :mnesia.transaction(fn ->
-      :ok = :mnesia.delete({@table, key})
+      :ok = :mnesia.delete({table, key})
     end)
     |> return_result_or_error
   end
 
-  def new_query, do: Lethe.new(@table)
+  def new_query(table \\ @default_table), do: Lethe.new(table)
 
   def query(%Query{} = query) do
     query_res =
@@ -91,8 +91,8 @@ defmodule Emit.DB do
     end
   end
 
-  def count do
-    :mnesia.table_info(@table, :size)
+  def count(table \\ @default_table) do
+    :mnesia.table_info(table, :size)
   end
 
   defp return_read_result_or_error(mnesia_result, table, id) do
