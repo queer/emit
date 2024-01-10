@@ -6,6 +6,10 @@ defmodule Emit.Cluster do
     GenServer.start_link(__MODULE__, monitor_fn, name: __MODULE__)
   end
 
+  def init([]) do
+    init({__MODULE__, :monitor_nodes, []})
+  end
+
   def init({m, f, a}) do
     apply(m, f, a)
     Logger.debug("[EMIT] [CLUSTER] boot: node: monitor up")

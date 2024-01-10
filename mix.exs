@@ -6,7 +6,7 @@ defmodule Emit.MixProject do
   def project do
     [
       app: :emit,
-      version: "0.1.4",
+      version: "0.1.5",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
